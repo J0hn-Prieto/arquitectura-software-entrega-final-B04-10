@@ -1,0 +1,23 @@
+=== GET /api/v1/profesionales?especialidad=dermatologia
+[{"id":"prof-001","nombre":"Laura Mejía","especialidad":"dermatologia","valor_consulta":60000}]
+
+=== GET /api/v1/profesionales/prof-001/disponibilidad
+[{"id":"cupo-001","profesional_id":"prof-001","inicio":"2026-10-15T08:00:00","disponible":true,"version":1},{"id":"cupo-002","profesional_id":"prof-001","inicio":"2026-10-15T09:00:00","disponible":true,"version":1},{"id":"cupo-003","profesional_id":"prof-001","inicio":"2026-10-15T10:00:00","disponible":true,"version":1},{"id":"cupo-004","profesional_id":"prof-001","inicio":"2026-10-15T11:00:00","disponible":true,"version":1}]
+
+=== POST /api/v1/reservas (pago aprobado)
+HTTP/1.1 201 Created
+date: Thu, 08 Oct 2026 23:42:01 GMT
+server: uvicorn
+content-length: 782
+content-type: application/json
+x-id-correlacion: 44033a92d935
+
+{"id":"res-00782a9a","paciente_id":"pac-001","cupo_id":"cupo-002","profesional_id":"prof-001","inicio":"2026-10-15T09:00:00","valor":60000,"estado":"CONFIRMADA","id_correlacion":"44033a92d935","pago_id":"pago-5370471e","traza":[{"paso":"T1 bloquear cupo","estado":"OK","detalle":"versión 2","momento":"2026-10-08T18:42:01.597225"},{"paso":"T2 registrar reserva","estado":"OK","detalle":"estado PENDIENTE","momento":"2026-10-08T18:42:01.597645"},{"paso":"T3 autorizar cobro","estado":"OK","detalle":"pago-5370471e","momento":"2026-10-08T18:42:01.597720"},{"paso":"T4 confirmar cita","estado":"OK","detalle":"punto sin retorno","momento":"2026-10-08T18:42:01.597744"},{"paso":"T5 notificar","estado":"ENCOLADO","detalle":"entrega asíncrona","momento":"2026-10-08T18:42:01.597851"}]}
+=== POST /api/v1/reservas (mismo cupo, version vencida -> 409)
+{"codigo":"CONFLICTO_DE_VERSION","mensaje":"El cupo cupo-002 está en la versión 2, no en la 1.","id_correlacion":"3c53e360df62"}
+
+=== POST /api/v1/reservas (pago rechazado -> 402 y compensacion)
+{"codigo":"PAGO_RECHAZADO","mensaje":"Fondos insuficientes para un cobro de 60000.","id_correlacion":"72781f01d6c6"}
+
+=== GET /api/v1/estado
+{"interruptor_pagos":"CERRADO","fallos_consecutivos":0,"notificaciones_pendientes":2,"notificaciones_entregadas":0,"cupos_disponibles":11,"reservas":2}

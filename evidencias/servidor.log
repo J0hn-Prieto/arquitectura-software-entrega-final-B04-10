@@ -1,0 +1,14 @@
+INFO:     Started server process [27440]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8011 (Press CTRL+C to quit)
+INFO:     127.0.0.1:57524 - "GET /api/v1/estado HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57525 - "GET /api/v1/profesionales HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54759 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54759 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57290 - "GET /api/v1/profesionales?especialidad=dermatologia HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57291 - "GET /api/v1/profesionales/prof-001/disponibilidad HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57292 - "POST /api/v1/reservas HTTP/1.1" 201 Created
+INFO:     127.0.0.1:57293 - "POST /api/v1/reservas HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:57294 - "POST /api/v1/reservas HTTP/1.1" 402 Payment Required
+INFO:     127.0.0.1:57295 - "GET /api/v1/estado HTTP/1.1" 200 OK

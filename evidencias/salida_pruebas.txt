@@ -1,0 +1,23 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\jhonp\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\jhonp\Downloads\plataforma-citas-soa
+plugins: anyio-4.14.1
+collecting ... collected 9 items
+
+tests/test_saga.py::test_busqueda_por_especialidad PASSED                [ 11%]
+tests/test_saga.py::test_reserva_exitosa_recorre_toda_la_saga PASSED     [ 22%]
+tests/test_saga.py::test_doble_reserva_del_mismo_horario_se_rechaza PASSED [ 33%]
+tests/test_saga.py::test_pago_rechazado_compensa_y_libera_el_horario PASSED [ 44%]
+tests/test_saga.py::test_pasarela_caida_responde_503_y_compensa PASSED   [ 55%]
+tests/test_saga.py::test_interruptor_de_circuito_se_abre_tras_fallos_consecutivos PASSED [ 66%]
+tests/test_saga.py::test_reintento_con_la_misma_clave_no_genera_doble_cobro PASSED [ 77%]
+tests/test_saga.py::test_cancelacion_reversa_el_cobro_y_libera_el_cupo PASSED [ 88%]
+tests/test_saga.py::test_notificaciones_se_entregan_fuera_del_flujo_de_reserva PASSED [100%]
+
+============================== warnings summary ===============================
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\fastapi\testclient.py:1
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 9 passed, 1 warning in 1.09s =========================

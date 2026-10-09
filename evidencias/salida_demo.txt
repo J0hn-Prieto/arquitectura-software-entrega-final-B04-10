@@ -1,0 +1,78 @@
+C:\Users\jhonp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+
+==============================================================================
+ESCENARIO 1. Reserva exitosa: la saga recorre los cinco pasos
+==============================================================================
+  Cupo cupo-001 del 2026-10-15T08:00:00 en versión 1
+  HTTP 201
+  Reserva res-e12a88f2 | estado: CONFIRMADA | correlacion: bb6f19188fef
+    - T1 bloquear cupo: OK (versión 2)
+    - T2 registrar reserva: OK (estado PENDIENTE)
+    - T3 autorizar cobro: OK (pago-62eed5e2)
+    - T4 confirmar cita: OK (punto sin retorno)
+    - T5 notificar: ENCOLADO (entrega asíncrona)
+
+==============================================================================
+ESCENARIO 2. Doble reserva: el bloqueo optimista rechaza la segunda
+==============================================================================
+  Paciente 1 reserva el cupo:
+  HTTP 201
+  Reserva res-0a0e48b3 | estado: CONFIRMADA | correlacion: c5a870191db5
+    - T1 bloquear cupo: OK (versión 2)
+    - T2 registrar reserva: OK (estado PENDIENTE)
+    - T3 autorizar cobro: OK (pago-0d5aa9b0)
+    - T4 confirmar cita: OK (punto sin retorno)
+    - T5 notificar: ENCOLADO (entrega asíncrona)
+  Paciente 2 intenta el mismo cupo con la versión que había leído:
+  HTTP 409
+  {'codigo': 'CONFLICTO_DE_VERSION', 'mensaje': 'El cupo cupo-001 está en la versión 2, no en la 1.', 'id_correlacion': '8f4481e84ac9'}
+
+==============================================================================
+ESCENARIO 3. Pago rechazado: se compensan los pasos ya ejecutados
+==============================================================================
+  HTTP 402
+  {'codigo': 'PAGO_RECHAZADO', 'mensaje': 'Fondos insuficientes para un cobro de 60000.', 'id_correlacion': '406ea4f3d650'}
+  Estado final de la reserva: COMPENSADA
+    - T1 bloquear cupo: OK
+    - T2 registrar reserva: OK
+    - T3 autorizar cobro: FALLO
+    - C2 anular reserva: OK
+    - C1 liberar cupo: OK
+  ¿El cupo volvió a estar disponible? sí
+
+==============================================================================
+ESCENARIO 4. Reintento con la misma clave: no hay doble cobro
+==============================================================================
+  HTTP 201
+  Reserva res-de538008 | estado: CONFIRMADA | correlacion: bf59baad8a13
+    - T1 bloquear cupo: OK (versión 2)
+    - T2 registrar reserva: OK (estado PENDIENTE)
+    - T3 autorizar cobro: OK (pago-4d35c9b9)
+    - T4 confirmar cita: OK (punto sin retorno)
+    - T5 notificar: ENCOLADO (entrega asíncrona)
+  Se repite exactamente la misma petición:
+  HTTP 201
+  Reserva res-de538008 | estado: CONFIRMADA | correlacion: bf59baad8a13
+    - T1 bloquear cupo: OK (versión 2)
+    - T2 registrar reserva: OK (estado PENDIENTE)
+    - T3 autorizar cobro: OK (pago-4d35c9b9)
+    - T4 confirmar cita: OK (punto sin retorno)
+    - T5 notificar: ENCOLADO (entrega asíncrona)
+  ¿Misma reserva? sí | ¿Mismo pago? sí | reservas creadas: 1
+
+==============================================================================
+ESCENARIO 5. Pasarela caída: reintento, compensación e interruptor
+==============================================================================
+  Intento 1 con la pasarela fuera de servicio:
+  HTTP 503
+  {'codigo': 'PASARELA_NO_DISPONIBLE', 'mensaje': 'La pasarela no respondió a tiempo.', 'id_correlacion': '16a3a0ee00c8'}
+  Intento 2 con la pasarela fuera de servicio:
+  HTTP 503
+  {'codigo': 'CIRCUITO_ABIERTO', 'mensaje': 'El interruptor de circuito está abierto para el servicio de pagos.', 'id_correlacion': '745dbac3a6ad'}
+  Intento 3 con la pasarela fuera de servicio:
+  HTTP 503
+  {'codigo': 'CIRCUITO_ABIERTO', 'mensaje': 'El interruptor de circuito está abierto para el servicio de pagos.', 'id_correlacion': 'f28a54204ecf'}
+  Estado operativo: {'interruptor_pagos': 'ABIERTO', 'fallos_consecutivos': 3, 'notificaciones_pendientes': 7, 'notificaciones_entregadas': 0, 'cupos_disponibles': 12, 'reservas': 3}
+  Nueva solicitud con un medio de pago válido, ya con el circuito abierto:
+  HTT
