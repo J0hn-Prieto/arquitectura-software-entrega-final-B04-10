@@ -3,7 +3,7 @@
 Implementación del patrón **Compensating Service Transaction** (Erl, 2009) sobre una interfaz REST,
 desarrollada como entrega final del módulo **Arquitectura de Software** del Politécnico Grancolombiano.
 
-**Grupo B04-10:** Ana Minu Cedeño · John Alexander Prieto Leiva · Luis Alejandro Góngora Arias · Samuel Eduardo Palacios Solís
+**Estudiante:** John Alexander Prieto Leiva — Grupo B04-10
 **Docente:** Jesús Antonio Figueroa Guerrero
 
 ---
